@@ -15,6 +15,9 @@
 		            values(#{scoreId},#{cppTime},#{cppResult},#{chertAddress})
 	</insert>
 
+     <select id="coparePhotoDetail" resultMap="ComeparePhotoResult">
+	   select * from ComeparePhoto where ScoreId = #{scoreId}
+	</select>
 	
 
 </mapper>

@@ -1164,11 +1164,9 @@ public class ExaminationController {
 					.selectExaminationByExaminationId(Integer.parseInt(examinationID));
 			Student student = studentServiceImpl.selectStudentByNo(studentRoNo);
 			String ext = "data:image/png;base64,";
-			//imageData = ext+imageData;
 			imageData = imageData.replaceAll("%2B", "+");
 			imageData = imageData.replaceAll("%2F", "/");
 			imageData = imageData.replaceAll("%3D", "=");
-			//System.out.println(imageData);
 
 			File targetFile = new File(request.getSession().getServletContext().getRealPath("/") + "Exam" + "/"
 					+ studentRoNo + "_" + examinationID);
@@ -1268,7 +1266,6 @@ public class ExaminationController {
 			imageData = imageData.replaceAll("%2B", "+");
 			imageData = imageData.replaceAll("%2F", "/");
 			imageData = imageData.replaceAll("%3D", "=");
-			System.out.println(imageData);
 			File targetFile = new File(request.getSession().getServletContext().getRealPath("/") + "Exam" + "/"
 					+ studentRoNo + "_" + examinationId);
 			System.out.println(targetFile.getAbsolutePath());
@@ -1327,6 +1324,11 @@ public class ExaminationController {
 								String chertPath = request.getSession().getServletContext().getRealPath("/") + "Exam" + "/chert/"
 										+ examinationId + "/" + score.getScoreId()+"_"+time+".png";
 								System.err.println(chertPath);
+								File tFile = new File(request.getSession().getServletContext().getRealPath("/") + "Exam" + "/chert/"
+										+ examinationId);
+								if (!tFile.exists()) {
+									tFile.mkdirs();
+								}
 								CopyFile.copyFile(im1, chertPath);
 								
 								comeparePhoto.setChertAddress("http://localhost:8080/ClassManageSys"+"/Exam" + "/chert/"
@@ -2226,6 +2228,18 @@ public class ExaminationController {
 		} else {
 			map.put("result", false);
 		}
+		return map;
+	}
+	
+	//教师端查看人脸识别详情
+	@RequestMapping(value = "/coparePhotoDetail.do")
+	@ResponseBody
+	public Map<String, Object> coparePhotoDetail(int scoreId) {
+		Map<String, Object> map = new HashMap<>();
+		List<ComeparePhoto> comeparePhotos = examinationServiceImpl.coparePhotoDetail(scoreId);
+		Score score = examinationServiceImpl.selectScoreById(scoreId);
+		map.put("score", score);
+		map.put("comeparePhotos", comeparePhotos);
 		return map;
 	}
 

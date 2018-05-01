@@ -593,6 +593,12 @@ public class ExaminationDaoImpl implements ExaminationDao{
 		return sqlSessionFactory.openSession().insert(statement,comeparePhoto);
 	}
 
+	@Override
+	public List<ComeparePhoto> coparePhotoDetail(int scoreId) {
+		String statement = "com.qdu.mapping.ComeparePhotoMapping.coparePhotoDetail";
+		return sqlSessionFactory.openSession().selectList(statement, scoreId);
+	}
+
 	
 	
 	

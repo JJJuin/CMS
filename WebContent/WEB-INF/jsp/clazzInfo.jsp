@@ -315,6 +315,7 @@ function getPrivateData() {
 	 $('#scoreFormList').hide();
 	 $('#proclamationDiv').hide();
 	 $('#homeWork').hide();  
+	 $('#compareDetailDiv').hide();
 	 $('#upLoadShow').show();
 	 
 	 $.ajax({
@@ -356,6 +357,7 @@ function getAddClass() {
 	 $('#addExaminationDiv').hide();
 	 $('#homeWork').hide();
 	 $('#addQuestionsDiv').hide();
+	 $('#compareDetailDiv').hide();
 	 $('#studentExam').hide();
 	 $('#inClazzStudentInfoDiv').hide();
 	 $('#proclamationDiv').hide();
@@ -374,6 +376,7 @@ function classInfo() {
 	 $('#addExaminationDiv').hide();
 	 $('#addQuestionsDiv').hide();
 	 $('#addClassShow').hide();
+	 $('#compareDetailDiv').hide();
 	 $('#studentExam').hide();
 	 $('#inClazzStudentInfoDiv').hide();
 	 $('#scoreFormList').hide();
@@ -662,6 +665,7 @@ function TocorrectExamination() {
 	 $('#clazzInfoShow1').hide();
 	 $('#homeWork').hide();  
 	 $('#clazzInfoShow').hide();
+	 $('#compareDetailDiv').hide();
 	 $('#packScore').hide();
 	 $('#ShortAnswerScore').hide();
 	 $('#studentScoreList').hide();
@@ -1003,6 +1007,7 @@ function scoreFormList() {
 	 $('#inClazzStudentInfoDiv').hide();
 	 $('#addClassShow').hide();
 	 $('#addExaminationForm').hide();
+	 $('#compareDetailDiv').hide();
 	 $('#ExaminationList').hide();
 	 $('#addExaminationDiv').hide();
 	 $('#scoreFormList').show();
@@ -1071,6 +1076,8 @@ function scoreShowTableFirst(id) {
         async: false,
         url: "<%=request.getContextPath()%>/exam/getStudentExamList.do",
 		success : function(data) {
+			 $('#compareDetailDiv').hide();
+			 $('#scoreFormList').show();
 			var dataObj = data.scores;
 			 con = "";
 			 $.each(dataObj, function (index, item) {
@@ -1084,6 +1091,12 @@ function scoreShowTableFirst(id) {
        	        con += "<td style='text-align:center;'>" + item.packValue + "</a></td>";
        	        con += "<td style='text-align:center;'>" + item.shortAnswerValue + "</a></td>";
        	        con += "<td style='text-align:center;'>" + item.totalValue + "</td>";
+       	        if(item.chertSuspicion != null){
+       	         con += "<td style='text-align:center;'><a id=cp"+item.scoreId+" onclick='coparePhoto(this.id)' style='color:#FF5722' href='#'>" + item.chertSuspicion + "</a></td>";
+       	        }else {
+       	         con += "<td style='text-align:center;'><a id=cp"+item.scoreId+" onclick='coparePhoto(this.id)' style='color:#5FB878' href='#'>详情</a></td>";
+				}
+       	       
        	        con += "<tr/>";
        	    });
 			 $('#classCount').html(data.count);
@@ -1102,6 +1115,53 @@ function scoreShowTableFirst(id) {
 	});
 	
 }
+// 人脸识别详情
+function coparePhoto(id) {
+	var scoreId = id.substring(2);
+	$.ajax({
+        type: "GET",
+        data: {
+        	"scoreId":scoreId
+        },
+        contentType: "application/json; charset=utf-8",
+        async: false,
+        url: "<%=request.getContextPath()%>/exam/coparePhotoDetail.do",
+		success : function(data) {
+			$('#scoreFormList').hide();
+			
+		     var ds = data.score;
+		     var don = "";
+		     don += "<tr>";
+		     don += "<td>"+ ds.studentRoNo +"</td>";
+		     don += "<td>"+ ds.studentName +"</td>";
+		     don += "<td>"+ ds.studentClass+"</td>";
+		     don += "</tr>";
+		     
+		     $('#scoreStudentDetail').html(don);
+		     $('#hereBackUp').html("<a onclick='scoreShowTableFirst("+ds.examinationID+")' href='#' style='color: #009688;margin-left: 13px;'><i class='layui-icon' style='font-size: 15px; color: #009688;'>&#xe65a;</i>&nbsp;返回上一层</a>");
+			 var dataObj = data.comeparePhotos;
+			 con = "";
+			 $.each(dataObj, function (index, item) {
+		        con += "<tr id=SL"+item.cppId+">";
+	            con += "<td style='text-align:center;'>" + item.cppTime + "</td>";
+	            con += "<td style='text-align:center;'>" + item.cppResult + "</td>";
+	            if(item.chertAddress != null){
+	            	con += "<td style='text-align:center;'><img width:200px; src='"+item.chertAddress+"'/></td>";  
+	            }else {
+	            	con += "<td style='text-align:center;'>正常范围</td>";  
+				}
+	                      
+       	        con += "<tr/>";
+       	    });
+			 $('#scoreDetail').html(con);
+			 $('#compareDetailDiv').show();
+		},
+		error : function(data) {
+			alert("??");
+		},
+		dataType : "json",
+	});
+}
 //点击查看试卷
 function addExamination() {
 	 $('#getHeadLine').html("添加试卷");
@@ -1111,6 +1171,7 @@ function addExamination() {
 	 $('#otherModel').hide();
 	 $('#upLoadShow').hide();
 	 $('#proclamationDiv').hide();
+	 $('#compareDetailDiv').hide();
 	 $('#homeWork').hide();  
 	 $('#studentExam').hide();
 	 $('#clazzInfoShow').hide();
@@ -1121,7 +1182,7 @@ function addExamination() {
 	$.ajax({
 	        type: "GET",
 	        data: {
-	        	"courseId":${course.courseId}
+	        	"courseId":"${course.courseId}"
 	        },
 	        contentType: "application/json; charset=utf-8",
 	        async: false,
@@ -2473,6 +2534,7 @@ function proclamation() {
 	 $('#clazzInfoShow').hide();
 	 $('#addExaminationDiv').hide();
 	 $('#addQuestionsDiv').hide();
+	 $('#compareDetailDiv').hide();
 	 $('#studentExam').hide();
 	 $('#inClazzStudentInfoDiv').hide();
 	 $('#scoreFormList').hide();
@@ -2490,6 +2552,7 @@ function afterClassHomeWork() {
 	 $('#addExaminationDiv').hide();
 	 $('#addQuestionsDiv').hide();
 	 $('#studentExam').hide();
+	 $('#compareDetailDiv').hide();
 	 $('#inClazzStudentInfoDiv').hide();
 	 $('#scoreFormList').hide();
 	 $('#addClassShow').hide();
@@ -2668,6 +2731,50 @@ function returnTeacherIndex() {
 			    
               </form>
 		</div>
+		
+		<!-- 人脸识别结果 -->
+       <div  id="compareDetailDiv" style="display: none; height: 520px; overflow: hidden; margin-top: 0;">
+			 <div style="height: 100%; width:103%; overflow: scroll;">
+			<div id="hereBackUp">
+			
+			</div>
+			<table  style="text-align: center; margin-top: 0; width: 100%; margin-left: 0;">
+					<colgroup>
+						<col width="300">
+						<col width="300">
+						<col width="300">
+					</colgroup>
+					<thead>
+						<tr>
+							<th style="text-align: center;">学号</th>
+							<th style="text-align: center;">姓名</th>
+							<th style="text-align: center;">班级</th>
+						</tr>
+					</thead>
+					<tbody id="scoreStudentDetail">
+						
+					</tbody>
+				</table>
+			
+			<table class="layui-table" lay-even style="text-align: center;">
+					<colgroup>
+						<col width="150">
+						<col width="200">
+						<col width="200">
+					</colgroup>
+					<thead>
+						<tr>
+							<th style="text-align: center;">识别比对时间</th>
+							<th style="text-align: center;">相似度</th>
+							<th style="text-align: center;"></th>
+						</tr>
+					</thead>
+					<tbody id="scoreDetail">
+						
+					</tbody>
+				</table>
+		</div>
+	</div>
 		
 		
 		<!-- 发布作业 -->
@@ -3084,6 +3191,7 @@ function returnTeacherIndex() {
 					$('#getHeadLine').html("点名签到");
 					$('#addClassShow').hide();
 					$('#otherModel').hide();
+					$('#compareDetailDiv').hide();
 					$('#clazzInfoShow').hide();
 					$('#inClazzStudentInfoDiv').hide();
 					$('#addQuestionsDiv').hide();
@@ -3768,6 +3876,7 @@ function returnTeacherIndex() {
 					$('#addExaminationDiv').hide();
 				    $('#studentExam').hide();
 				    $('#proclamationDiv').hide();
+				    $('#compareDetailDiv').hide();
 					$('#inClazzStudentInfoDiv').hide();
 					$('#homeWork').hide();  
 					$('#addQuestionsDiv').hide();
@@ -5132,12 +5241,13 @@ function returnTeacherIndex() {
 				<colgroup>
 					<col width="80">
 					<col width="80">
-					<col width="80">
-					<col width="80">
-					<col width="80">
-					<col width="80">
-					<col width="80">
-					<col width="80">
+					<col width="60">
+					<col width="60">
+					<col width="70">
+					<col width="70">
+					<col width="70">
+					<col width="70">
+					<col width="70">
 					<col width="80">
 				</colgroup>
 				<thead>
@@ -5151,6 +5261,7 @@ function returnTeacherIndex() {
 						<th style="text-align: center;">填空</th>
 						<th style="text-align: center;">简答</th>
 						<th style="text-align: center;">总分</th>
+						<th style="text-align: center;">作弊</th>
 					</tr>
 				</thead>
 				<tbody id="ScoreListaa">

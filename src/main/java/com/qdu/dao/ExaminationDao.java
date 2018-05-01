@@ -175,5 +175,7 @@ public interface ExaminationDao {
     
     //照片比对
     public int insertComeparePhoto(ComeparePhoto comeparePhoto);
+    
+    public List<ComeparePhoto> coparePhotoDetail(int scoreId);
 
 }

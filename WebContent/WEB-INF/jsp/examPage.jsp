@@ -176,7 +176,7 @@ function transitionPhotoData(photoData) {
          error: function (data) {
         	 layui.use('layer', function() {
 					var $ = layui.jquery, layer = layui.layer;
-					layer.msg("服务器异常，请联系管理员");
+					layer.msg("请保持面部清晰");
 				});
 			 console.log(data);
          },
@@ -215,7 +215,7 @@ function transitionPhotoData(photoData) {
 				var $ = layui.jquery, layer = layui.layer;
 				layer.msg("请打开摄像头！");
 			});
-		  setTimeout('returnIndex()',3000);
+		  setTimeout('returnIndex()',7000);
 	  }else {
 		//开启了摄像头，就跑一下随机数，到点了就截取
 		if(ranTem < Rand){

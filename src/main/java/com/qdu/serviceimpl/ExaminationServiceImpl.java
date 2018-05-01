@@ -420,6 +420,11 @@ public class ExaminationServiceImpl implements ExaminationService{
 	public int insertComeparePhoto(ComeparePhoto comeparePhoto) {
 		return examinationDaoImpl.insertComeparePhoto(comeparePhoto);
 	}
+
+	@Override
+	public List<ComeparePhoto> coparePhotoDetail(int scoreId) {
+		return examinationDaoImpl.coparePhotoDetail(scoreId);
+	}
 	
 	
 }

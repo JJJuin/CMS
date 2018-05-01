@@ -178,4 +178,6 @@ public interface ExaminationService {
     
     public int insertComeparePhoto(ComeparePhoto comeparePhoto);
     
+    public List<ComeparePhoto> coparePhotoDetail(int scoreId);
+    
 }
