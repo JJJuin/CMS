@@ -16,18 +16,15 @@
 		<result property="totalValue" column="TotalValue" />
 		<result property="examEnd" column="ExamEnd" />
 		<result property="scoreStatus" column="ScoreStatus" />
-		<result property="beforeExamPhoto" column="BeforeExamPhoto" />
-		<result property="examingPhotoOne" column="ExamingPhotoOne" />
-		<result property="examingPhotoTwo" column="ExamingPhotoTwo" />
-		<result property="examingPhotoThree" column="ExamingPhotoThree" />
+		<result property="chertSuspicion" column="ChertSuspicion" />
 	</resultMap>
 
    <insert id="insertScore" parameterType="com.qdu.pojo.Score">
       insert into 
       Score(StudentRoNo,StudentName,StudentClass,ExaminationID,SingleSelectionValue,MoreSelectionValue,
-      JudgeValue,PackValue,ShortAnswerValue,TotalValue,ExamEnd,ScoreStatus,BeforeExamPhoto) 
+      JudgeValue,PackValue,ShortAnswerValue,TotalValue,ExamEnd,ScoreStatus) 
       values(#{studentRoNo},#{studentName},#{studentClass},#{examinationID},#{singleSelectionValue},#{moreSelectionValue},
-      #{judgeValue},#{packValue},#{shortAnswerValue},#{totalValue},#{examEnd},#{scoreStatus},#{beforeExamPhoto})
+      #{judgeValue},#{packValue},#{shortAnswerValue},#{totalValue},#{examEnd},#{scoreStatus})
     </insert>
     
     <select id="selectScoreByExIdAndStuRoNo" resultMap="ScoreResult" parameterType="HashMap">
@@ -77,6 +74,12 @@
      <update id="updateScoreStatus" parameterType="HashMap">
       update Score set
       ScoreStatus = #{scoreStatus}
+      where ScoreId = #{scoreId}
+    </update>
+    
+    <update id="updateScoreChert" parameterType="HashMap">
+      update Score set
+      ChertSuspicion = #{chertSuspicion}
       where ScoreId = #{scoreId}
     </update>
     

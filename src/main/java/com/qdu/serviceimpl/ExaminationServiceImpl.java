@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.qdu.dao.ExaminationDao;
+import com.qdu.pojo.ComeparePhoto;
 import com.qdu.pojo.Examination;
 import com.qdu.pojo.Judge;
 import com.qdu.pojo.MoreSelection;
@@ -408,6 +409,16 @@ public class ExaminationServiceImpl implements ExaminationService{
 	@Override
 	public List<Score> selectScoreByStudent(String studentRoNo) {
 		return examinationDaoImpl.selectScoreByStudent(studentRoNo);
+	}
+
+	@Override
+	public int updateScoreChert(int scoreId, String chertSuspicion) {
+		return examinationDaoImpl.updateScoreChert(scoreId, chertSuspicion);
+	}
+
+	@Override
+	public int insertComeparePhoto(ComeparePhoto comeparePhoto) {
+		return examinationDaoImpl.insertComeparePhoto(comeparePhoto);
 	}
 	
 	

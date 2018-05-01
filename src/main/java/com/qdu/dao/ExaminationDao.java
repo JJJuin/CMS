@@ -2,6 +2,7 @@ package com.qdu.dao;
 
 import java.util.List;
 
+import com.qdu.pojo.ComeparePhoto;
 import com.qdu.pojo.Examination;
 import com.qdu.pojo.Judge;
 import com.qdu.pojo.MoreSelection;
@@ -170,4 +171,9 @@ public interface ExaminationDao {
     
     public List<Score> selectScoreByStudent(String studentRoNo);
     
+    public int updateScoreChert(int scoreId, String chertSuspicion);
+    
+    //照片比对
+    public int insertComeparePhoto(ComeparePhoto comeparePhoto);
+
 }

@@ -4,7 +4,11 @@ import java.io.Serializable;
 
 public class Score implements Serializable{
 
-	 private int scoreId;
+	 /**
+	 * 学生成绩
+	 */
+	private static final long serialVersionUID = 1L;
+	private int scoreId;
 	 private String studentRoNo;
 	 private String studentName;
 	 private String studentClass; 
@@ -17,36 +21,14 @@ public class Score implements Serializable{
 	 private int totalValue;
 	 private int examEnd;
 	 private String scoreStatus;
-	 private String BeforeExamPhoto;
-	 private String ExamingPhotoOne;
-	 private String ExamingPhotoTwo;
-	 private String ExamingPhotoThree;
-	 
-	 
-	 
-	public String getBeforeExamPhoto() {
-		return BeforeExamPhoto;
+	 private String chertSuspicion;
+
+
+	public String getChertSuspicion() {
+		return chertSuspicion;
 	}
-	public void setBeforeExamPhoto(String beforeExamPhoto) {
-		BeforeExamPhoto = beforeExamPhoto;
-	}
-	public String getExamingPhotoOne() {
-		return ExamingPhotoOne;
-	}
-	public void setExamingPhotoOne(String examingPhotoOne) {
-		ExamingPhotoOne = examingPhotoOne;
-	}
-	public String getExamingPhotoTwo() {
-		return ExamingPhotoTwo;
-	}
-	public void setExamingPhotoTwo(String examingPhotoTwo) {
-		ExamingPhotoTwo = examingPhotoTwo;
-	}
-	public String getExamingPhotoThree() {
-		return ExamingPhotoThree;
-	}
-	public void setExamingPhotoThree(String examingPhotoThree) {
-		ExamingPhotoThree = examingPhotoThree;
+	public void setChertSuspicion(String chertSuspicion) {
+		this.chertSuspicion = chertSuspicion;
 	}
 	public int getScoreId() {
 		return scoreId;

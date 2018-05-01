@@ -147,15 +147,17 @@
 
 
 			<div style="background-color: blue;">
-				<div style="height: 60px; width: 300px; float: left;">
+				<div style="height: 60px; width: 600px; float: left;">
 					<input type="file" name="file" id="uploadFile"
 						style="display: none;" onchange="preImg(this.id, 'imgPre','tct');" />
 					<button class="layui-btn" type="button"
 						onclick="uploadFile.click()" style="float: left;">上传照片</button>
+						<p style="margin-left: 6%; color: #FF5722">*请上传本人头部照片  照片将用于登录及考试*</p>
 					<input id="tct" type="text" name="studentPhoto" value="" lay-verify="photovalidate"
 						style="display: none" />
-						<button style="float: left;margin-left: 34%; width:100px" type="reset" class="layui-btn layui-btn-primary">重置</button>
+						
 				        <br/><br/><br/><button style="margin-left: 0;" class="layui-btn" lay-submit lay-filter="formDemo">现在注册</button>
+				        <button style="margin-left: 3%; width:100px" type="reset" class="layui-btn layui-btn-primary">重置</button>
 				</div>
 				
 				<!--  <div class="layui-upload-list" style="float: left;">

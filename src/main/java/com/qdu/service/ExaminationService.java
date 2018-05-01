@@ -2,6 +2,7 @@ package com.qdu.service;
 
 import java.util.List;
 
+import com.qdu.pojo.ComeparePhoto;
 import com.qdu.pojo.Examination;
 import com.qdu.pojo.Judge;
 import com.qdu.pojo.MoreSelection;
@@ -172,5 +173,9 @@ public interface ExaminationService {
     public int selectCountScoreById(int examinationID);
     
     public List<Score> selectScoreByStudent(String studentRoNo);
+    
+    public int updateScoreChert(int scoreId, String chertSuspicion);
+    
+    public int insertComeparePhoto(ComeparePhoto comeparePhoto);
     
 }

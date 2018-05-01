@@ -36,9 +36,10 @@ return "您尚未保存！";
 }
 </script>
 <script language="javascript" type="text/javascript"> 
+var videoExist = false;   //检测摄像头打开用
+var video;
 window.onload=function(){
-	
-	  var video = document.getElementById('video'),
+	  video = document.getElementById('video'),
 	  vendorUrl = window.URL || window.webkitURL;
 	  navigator.getMedia = navigator.getUserMedia ||
 	                       navagator.webkitGetUserMedia ||
@@ -46,12 +47,15 @@ window.onload=function(){
 	                       navigator.msGetUserMedia;
 	  navigator.getMedia({
 	      video: true, //使用摄像头对象
-	      audio: false  //不适用音频
+	      audio: false //不适用音频
 	  }, function(strem){
 	      console.log(strem);
 	      video.src = vendorUrl.createObjectURL(strem);
 	      video.play();
+	      //检测到数据流，证明开启了摄像头
+	      videoExist = true;
 	  }, function(error) {
+		  videoExist = false;
 	      console.log(error);
 	  });
 	
@@ -126,7 +130,64 @@ window.onload=function(){
 	      });
       });
 }
-
+//拍照截取
+function photoCompare() {
+	 video = document.getElementById('video'),
+	 canvas = document.getElementById('canvas'),
+     img = document.getElementById('img'),
+	 //绘制canvas图形
+    canvas.getContext('2d').drawImage(video, 0, 0, 200, 150);
+    
+    //把canvas图像转为img图片
+    
+    var ext = img.src.substring(img.src.lastIndexOf(".")+1).toLowerCase();  
+    Pic = canvas.toDataURL("image/png");   
+   // console.log(Pic);
+    Pic = Pic.replace(/^data:image\/(png);base64,/,"");
+    return Pic;
+}
+var stop = false;
+function transitionPhotoData(photoData) {
+	var imageData = photoData;	
+	$.ajax({
+         type: "POST",
+         data: {
+        	 "studentRoNo":"${student.studentRoNo}",
+	         "examinationId":"${examination.examinationID}",
+		     "imageData":imageData
+         },
+         contentType: "application/json; charset=utf-8",
+         dataType: "json",
+         async: true,
+         url: "<%=request.getContextPath()%>/exam/comparePhoto.do",
+         success: function (data) {
+        	 if(data.isstop == true){
+					stop = true;
+				}
+        	 if(data.result == "success"){
+        		 
+				}else if(data.result == "fail"){
+					layui.use('layer', function() {
+						var $ = layui.jquery, layer = layui.layer;
+						layer.msg(data.msg);
+					});
+				}
+         },
+         error: function (data) {
+        	 layui.use('layer', function() {
+					var $ = layui.jquery, layer = layui.layer;
+					layer.msg("服务器异常，请联系管理员");
+				});
+			 console.log(data);
+         },
+     });
+}
+	var ranTem = 0;
+	var Rand = 7;
+	function Rand() {
+		Rand = Math.floor(Math.random(30)*30);
+		alert(Rand);
+	}
   var interval = 1000; 
   function ShowCountDown(year,month,day,hour,minute,second,divname) 
 	{ 
@@ -144,9 +205,42 @@ window.onload=function(){
 		  var cc = document.getElementById(divname); 
 		  cc.innerHTML = "剩余:"+hour+"小时"+"<span style='color:#FF5722'>"+minute+"</span>"+"分"+"<span style='color:#FF5722'>"+second+"</span>"+"秒"; 
 		  timeEnd();
+		  setTimeout('openVideo()',3000);
+		  
 	 } 
-		window.setInterval(function(){ShowCountDown(${year},${month},${day},${hour},${minute},${seconds},'time');}, interval); 
-
+  function openVideo() {
+	//检测摄像头是否开启
+	  if(videoExist == false){
+		  layui.use('layer', function() {
+				var $ = layui.jquery, layer = layui.layer;
+				layer.msg("请打开摄像头！");
+			});
+		  setTimeout('returnIndex()',3000);
+	  }else {
+		//开启了摄像头，就跑一下随机数，到点了就截取
+		if(ranTem < Rand){
+			//小于随机数，时间+1s
+			ranTem ++;
+		}else if(ranTem == Rand){
+			if(stop == false){
+				//等于了随机数，截取照片，编码后发给后台处理
+				var photoData = photoCompare();
+				transitionPhotoData(photoData);
+				ranTem = 0;
+				Rand = Math.floor(Math.random(7)*60);
+			}
+			
+		}
+	}
+}
+		window.setInterval(
+				function(){
+					ShowCountDown("${year}","${month}","${day}","${hour}","${minute}","${seconds}",'time');
+					}, interval); 
+        //回到首页
+        function returnIndex() {
+        	window.location.href="<%=request.getContextPath()%>/index.jsp"; 
+		}
 		function timeEnd() {
 			  if($('#hour').val() == '0' && $('#minute').val() == '5' &&$('#second').val() == '0'){
 				  layui.use('layer', function(){
@@ -193,8 +287,8 @@ window.onload=function(){
 			$.ajax({
 		         type: "GET",
 		         data: {
-		        	 "studentRoNo":${student.studentRoNo},
-		        	 "examinationID":${examination.examinationID}
+		        	 "studentRoNo":"${student.studentRoNo}",
+		        	 "examinationID":"${examination.examinationID}"
 		         },
 		         contentType: "application/json; charset=utf-8",
 		         dataType: "json",
@@ -265,6 +359,8 @@ window.onload=function(){
 	<!-- 正文之考试信息 -->
 	<div id="videoDiv" style="margin:0; position: fixed; right: 0">
 		    <video id="video" width="200px" height="200px;" style="margin:0;"></video>
+		    <canvas id='canvas' width='200px' height='200px' style="margin:0; padding:0;display:none;" ></canvas>
+            <img id='img' src='' style="margin:0;display:none;">
 	</div>
 	
 	<div style="background-color: white; margin-left: 5%; margin-right: 5%">

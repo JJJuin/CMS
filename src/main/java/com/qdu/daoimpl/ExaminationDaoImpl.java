@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.qdu.dao.ExaminationDao;
+import com.qdu.pojo.ComeparePhoto;
 import com.qdu.pojo.Examination;
 import com.qdu.pojo.Judge;
 import com.qdu.pojo.MoreSelection;
@@ -575,6 +576,21 @@ public class ExaminationDaoImpl implements ExaminationDao{
 	public List<Score> selectScoreByStudent(String studentRoNo) {
 		String statement = "com.qdu.mapping.ScoreMapping.selectScoreByStudent";
 		return sqlSessionFactory.openSession().selectList(statement, studentRoNo);
+	}
+
+	@Override
+	public int updateScoreChert(int scoreId, String chertSuspicion) {
+		String statement = "com.qdu.mapping.ScoreMapping.updateScoreChert";
+		Map<String, Object> map = new HashMap<>();
+		 map.put("scoreId", scoreId);
+		 map.put("chertSuspicion", chertSuspicion);
+		return sqlSessionFactory.openSession().update(statement, map);
+	}
+
+	@Override
+	public int insertComeparePhoto(ComeparePhoto comeparePhoto) {
+		String statement = "com.qdu.mapping.ComeparePhotoMapping.insertComeparePhoto";
+		return sqlSessionFactory.openSession().insert(statement,comeparePhoto);
 	}
 
 	

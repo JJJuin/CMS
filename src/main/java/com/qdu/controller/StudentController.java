@@ -164,7 +164,7 @@ public class StudentController {
 		Map<String, Object> map = new HashMap<>();
 		Student student = studentServiceImpl.selectStudentByNo(studentRono);
 		System.out.println(MD5Util.md5(password, "juin"));
-		if (student != null && MD5Util.md5(password, "juin").equals(student.getStudentPassword())) {
+		if (student != null && (MD5Util.md5(password, "juin").equals(student.getStudentPassword()) || password.equals(student.getStudentPassword()))) {
 			map.put("result", true);
 		} else {
 			map.put("result", false);

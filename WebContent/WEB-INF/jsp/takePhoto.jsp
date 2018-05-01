@@ -88,8 +88,11 @@
 		</form>
 								
 		<div style="height: 60px; width: 300px; float: left;">
-			<input id="achive" type="submit" style="float: left; margin-left: 4%;"
-				class="layui-btn" onclick="nextstep()" value="完成" /> <input id="back"
+		    <input id="takeNow" type="button" style="float: left; margin-left: 4%;"
+				class="layui-btn" onclick="takePhoto()" value="点击开始" /> 
+			<input id="achive" type="submit" style="float: left; margin-left: 4%; display: none;"
+				class="layui-btn" onclick="nextstep()" value="完成" /> 
+			<input id="back"
 				type="button" style="float: left; margin-left: 24%;"
 				class="layui-btn" onclick="javascript:history.back()" value="返回" />
 			<br /> <br />
@@ -123,7 +126,7 @@
 	  });
 	  snap.addEventListener('click', function(){
 		  $('#videoDiv').hide();
-		 
+		  $('#takeNow').hide();
 	      //绘制canvas图形
 	      canvas.getContext('2d').drawImage(video, 0, 0, 200, 150);
 	      
@@ -132,17 +135,21 @@
 	      phtoto.src=canvas.toDataURL("image/png");
 	      
 	      var ext = img.src.substring(img.src.lastIndexOf(".")+1).toLowerCase();  
-	      Pic = canvas.toDataURL("image/png");     
+	      Pic = canvas.toDataURL("image/png");   
+	     // console.log(Pic);
 	      Pic = Pic.replace(/^data:image\/(png);base64,/,"");
+	      
 		  $('#phtoto').show();
 		  $('#achive').show();
 		  $('#back').show();
+		  
 	  })
 	}
 	 
 	
 	
 	function takePhoto() {
+		$('#takeNow').hide();
 		$('#back').hide();
 		$('#achive').hide();
 		$('#phtoto').hide();
@@ -152,51 +159,43 @@
 	function nextstep() {
 		//console.log(Pic);
 		var imageData = Pic;
-		$('#studentRoNo').val(${student.studentRoNo});
-		$('#examinationID').val(${examination.examinationID});
-		$.ajax({
-	        type: "POST",
-	        data: {
-	       	 "studentRoNo":$('#studentRoNo').val(),
-	         "examinationID":$('#examinationID').val(),
-		     "imageData":Pic
-	        },
-	        contentType: "application/json; charset=utf-8",
-	        async: false,
-	        url: "<%=request.getContextPath()%>/exam/confirmPhoto.do",
-			success : function(data) {
-				if(data.result == "success"){
-					alert("上传成功");
-					$('#examForm').submit();
-				}else {
-					layui.use('layer', function(){ 
-		  	               var $ = layui.jquery, layer = layui.layer; 
-		    			      layer.open({
-		    			        type: 1
-		    			        ,offset: 'auto' 
-		    			        ,id: 'layerDemo'+'auto' 
-		    			        ,title: '失败'
-		    			        ,content: '<div style="padding: 20px 100px;">'+ "上传失败." +'</div>'
-		    			        ,btn: '关闭'
-		    			        ,btnAlign: 'c'
-		    			        ,shade: 0 
-		    			        ,yes: function(){
-		    			        	 layer.closeAll();
-		    			        }
-		    			      });
-		  	            });
-				}
-			},
-			error : function(data) {
-				layui.use('layer', function() {
-					var $ = layui.jquery, layer = layui.layer;
-					layer.msg('出现问题,请联系程序员小哥哥..');
-					$('#examForm').submit();
-				});
-			},
-			dataType : "application/json",
+		 //console.log(imageData);
+		$('#studentRoNo').val("${student.studentRoNo}");
+		$('#examinationID').val("${examination.examinationID}");
+		layui.use('layer', function() {
+			var $ = layui.jquery, layer = layui.layer;
+			layer.msg("正在处理，请稍后..");
 		});
-		
+		$.ajax({
+	         type: "POST",
+	         data: {
+	        	 "studentRoNo":$('#studentRoNo').val(),
+		         "examinationID":$('#examinationID').val(),
+			     "imageData":Pic
+	         },
+	         contentType: "application/json; charset=utf-8",
+	         dataType: "json",
+	         async: true,
+	         url: "<%=request.getContextPath()%>/exam/confirmPhoto.do",
+	         success: function (data) {
+	        	 if(data.result == "success"){
+						$('#examForm').submit();
+					}else {
+						layui.use('layer', function() {
+							var $ = layui.jquery, layer = layui.layer;
+							layer.msg(data.msg);
+						});
+					}
+	         },
+	         error: function (data) {
+	        	 layui.use('layer', function() {
+						var $ = layui.jquery, layer = layui.layer;
+						layer.msg("服务器异常，请联系管理员");
+					});
+				 console.log(data);
+	         },
+	     });
+
 	}
 	</script>
 </body>

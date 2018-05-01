@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qdu.mapping.ComeparePhotoMapping">
+	<cache type="com.qdu.cache.RedisCache" />
+	<resultMap type="com.qdu.pojo.ComeparePhoto" id="ComeparePhotoResult">
+		<id property="cppId" column="CppId" />
+        <result property="cppTime" column="CppTime" />
+         <result property="scoreId" column="ScoreId" />
+        <result property="cppResult" column="CppResult" />
+        <result property="chertAddress" column="ChertAddress" />
+	</resultMap>
+
+	<insert id="insertComeparePhoto" parameterType="com.qdu.pojo.ComeparePhoto">
+		insert into ComeparePhoto(ScoreId,CppTime,CppResult,ChertAddress)
+		            values(#{scoreId},#{cppTime},#{cppResult},#{chertAddress})
+	</insert>
+
+	
+
+</mapper>

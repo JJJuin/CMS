@@ -37,7 +37,7 @@ function fresh(){
 	$('#d').html(d + "=?");
 	$('#teacherMobile').val("");
 if(location.href.indexOf("?reload=true")<0){
-	console.log(0.1+0.2 == 0.3);
+	
     location.href+="?reload=true";  
    }  
 }  
