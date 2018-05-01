@@ -12,11 +12,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.opencv.core.Core;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -25,8 +23,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.mysql.fabric.xmlrpc.base.Data;
 import com.qdu.aop.SystemLog;
 import com.qdu.pojo.ClazzStu;
 import com.qdu.pojo.ComeparePhoto;
@@ -51,12 +47,10 @@ import com.qdu.service.MessageService;
 import com.qdu.service.StudentInfoService;
 import com.qdu.service.StudentService;
 import com.qdu.service.TeacherService;
-import com.qdu.util.BMPLoader;
 import com.qdu.util.CopyFile;
 import com.qdu.util.DetectFaceTest;
 import com.qdu.util.FingerPrint;
 import com.qdu.util.MD5Util;
-import com.qdu.util.PhotoDigest;
 
 @Controller
 @RequestMapping(value = "exam")
@@ -1318,7 +1312,7 @@ public class ExaminationController {
 							if(tem < 9){//0-8,9次
 								//这里的意思是最多观察9次，多于九次不再记录，直接记录作弊嫌疑
 								System.out.println("此处应该存点其他东西..");
-								String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:SS").format(new Date());
+								String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 								time = time.replaceAll("-", "").replaceAll(":", "");
 								System.err.println(request.getSession().getServletContext().getRealPath("/"));
 								String chertPath = request.getSession().getServletContext().getRealPath("/") + "Exam" + "/chert/"
@@ -1357,7 +1351,7 @@ public class ExaminationController {
 			        System.err.println(compare+"");
 			        
 			        comeparePhoto.setCppResult(compare+"");
-			        comeparePhoto.setCppTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:SS").format(new Date()));
+			        comeparePhoto.setCppTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
 			        comeparePhoto.setScoreId(score.getScoreId());
 			        
 					int insertComepareResult = examinationServiceImpl.insertComeparePhoto(comeparePhoto);
