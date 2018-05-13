@@ -26,6 +26,21 @@
 	  AND CourseId = #{courseId} GROUP BY StudentRoNo LIMIT 1
 	</select>
 	
+	<select id="selectTimeList" resultMap="StudentInfoDetailResult">
+	  SELECT CurrentTime FROM Studentinfodetail 
+	  WHERE CourseId = #{courseId} 
+	  GROUP BY CurrentTime 
+	  ORDER BY StudentInfoDetailId DESC
+	</select>
+	
+	<select id="stuInfoDetailByThree" resultMap="StudentInfoDetailResult" parameterType="HashMap">
+	  SELECT * FROM Studentinfodetail 
+	  WHERE CourseId = #{courseId} 
+	  AND CurrentTime = #{currentTime}
+	  AND StudentRoNo = #{studentRoNo}  GROUP BY CurrentTime 
+	  ORDER BY StudentInfoDetailId DESC
+	</select>
+	
 	<select id="selectEveryTimeSign" resultMap="StudentInfoDetailResult">
 	  select * from StudentInfoDetail where CourseId = #{courseId} 
 	  And CurrentTime = #{currentTime} And CurrentCount = #{currentCount} 

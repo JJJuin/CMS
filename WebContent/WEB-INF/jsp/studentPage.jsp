@@ -1879,20 +1879,20 @@ function searchData() {
 								placeholder="请输入课程编码" autocomplete="off" class="layui-input">
 						</div>
 						<p id="listenEmpty"
-							style="color: red; display: none; margin-left: 13%;">*课程为空*</p>
+							style="color: red; display: none; margin-left: 16%;">*课程为空*</p>
 						<p id="listenId"
-							style="color: red; display: none; margin-left: 13%;">*课程编码请输入数字*</p>
+							style="color: red; display: none; margin-left: 16%;">*课程编码请输入数字*</p>
 						<p id="listenIdEmpty"
-							style="color: red; display: none; margin-left: 13%;">*课程编码不可为空*</p>
+							style="color: red; display: none; margin-left: 16%;">*课程编码不可为空*</p>
 						<p id="listenClazzs"
-							style="color: red; display: none; margin-left: 13%;">*暂无班级可供选择*</p>
+							style="color: red; display: none; margin-left: 16%;">*暂无班级可供选择*</p>
 					</div>
 
 					<div class="layui-form-item">
 						<label class="layui-form-label">课程名称</label>
 						<div class="layui-input-block">
 							<input id="courseName" type="text" name="courseName" required
-								lay-verify="required" placeholder="请输入课程名称" autocomplete="off"
+								lay-verify="required" placeholder="可选填" autocomplete="off"
 								class="layui-input">
 						</div>
 						<p id="listenName"

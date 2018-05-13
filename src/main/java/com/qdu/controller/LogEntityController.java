@@ -6,18 +6,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.qdu.aop.SystemLog;
 import com.qdu.cache.RedisCache;
 import com.qdu.pojo.Admin;
 import com.qdu.pojo.Feedback;
@@ -31,7 +26,6 @@ import com.qdu.service.MessageService;
 import com.qdu.service.MyBlogService;
 import com.qdu.service.StudentService;
 import com.qdu.service.TeacherService;
-import com.qdu.util.Page;
 import com.qdu.websocket.WebSocketConnection;
 //超级管理员+相关操作
 @Controller

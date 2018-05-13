@@ -750,11 +750,10 @@ public class TeacherController {
 		message.setHaveRead("未读");
 		message.setMessageContent(teacher.getTeacherName()+ " 老师：<br/><br/><span style='color:#FF5722'>"+ messageToStudentContent +"</span><br/>");
 		message.setMessageType("nomal");
-		
 		int tem = messageServiceImpl.insertMessage(message);
+		int messageCount = messageServiceImpl.selectMessageCount(studentRoNo);
+		 WebSocketConnection.sendMessageToUser(studentRoNo, messageCount+"");
 		if(tem > 0){
-			int messageCount = messageServiceImpl.selectMessageCount(studentRoNo);
-			 WebSocketConnection.sendMessageToUser(studentRoNo, messageCount+"");
 			map.put("result", true);
 		}
 		else {
@@ -762,7 +761,7 @@ public class TeacherController {
 		}
 		return map;
 	}	
-//给学生回复消息
+    //给学生回复消息
 	@RequestMapping(value = "/returnMessageToStudent.do")
 	@ResponseBody
 	public Map<String, Object> returnMessageToStudent(int messageId,String returnMessageToStudentContent){
@@ -852,7 +851,7 @@ public class TeacherController {
                 sheet.addCell(new Label(2, i + 1, scores.get(i).getStudentClass(), wf));
                 sheet.addCell(new Label(3, i + 1, scores.get(i).getSingleSelectionValue() + "", wf));
                 sheet.addCell(new Label(4, i + 1, scores.get(i).getMoreSelectionValue() + "", wf));
-                sheet.addCell(new Label(5, i + 1, scores.get(i).getJudgeValue() + "", wf));
+                sheet.addCell(new Label(5, i + 1, scores.get(i).getJudgeValue() + "", wf)); 
                 sheet.addCell(new Label(6, i + 1, scores.get(i).getPackValue() + "", wf));
                 sheet.addCell(new Label(7, i + 1, scores.get(i).getTotalValue() + "", wf));
             }

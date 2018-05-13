@@ -907,6 +907,8 @@ public class StudentController {
 		message.setMessageType("nomal");
 		
 		int tem = messageServiceImpl.insertMessage(message);
+		 int messageCount = messageServiceImpl.selectMessageCount(teacherMobile);
+		 WebSocketConnection.sendMessageToUser(teacherMobile, messageCount+"");
 		if(tem > 0){
 			map.put("result", true);
 		}

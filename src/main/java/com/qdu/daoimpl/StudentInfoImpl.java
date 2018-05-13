@@ -210,4 +210,21 @@ public class StudentInfoImpl implements StudentInfoDao{
 		return sessionFactory.openSession().delete(statement, map);
 	}
 
+	@Override
+	public List<StudentInfoDetail> selectTimeList(int courseId) {
+		System.err.println(courseId);
+		String statement = "com.qdu.mapping.StudentInfoDetailMapping.selectTimeList";
+		return sessionFactory.openSession().selectList(statement, courseId);
+	}
+
+	@Override
+	public StudentInfoDetail stuInfoDetailByThree(String studentRoNo, int courseId, String currentTime) {
+		String statement = "com.qdu.mapping.StudentInfoDetailMapping.stuInfoDetailByThree";
+		Map<String, Object> map = new HashMap<>();
+		map.put("studentRoNo", studentRoNo);
+		map.put("courseId", courseId);
+		map.put("currentTime", currentTime);
+		return sessionFactory.openSession().selectOne(statement, map);
+	}
+
 }

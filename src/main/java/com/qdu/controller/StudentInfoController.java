@@ -5,24 +5,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.map.HashedMap;
-import org.aspectj.weaver.ast.Var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.qdu.aop.SystemLog;
-import com.qdu.pojo.Clazz;
 import com.qdu.pojo.ClazzStu;
 import com.qdu.pojo.Course;
-import com.qdu.pojo.Examination;
 import com.qdu.pojo.Message;
-import com.qdu.pojo.Score;
 import com.qdu.pojo.Student;
 import com.qdu.pojo.StudentInfo;
 import com.qdu.pojo.StudentInfoDetail;
@@ -34,10 +26,8 @@ import com.qdu.service.MessageService;
 import com.qdu.service.StudentInfoService;
 import com.qdu.service.StudentService;
 import com.qdu.service.TeacherService;
-import com.qdu.serviceimpl.ClazzServiceImpl;
 import com.qdu.util.MD5Util;
 import com.qdu.websocket.WebSocketConnection;
-
 import jxl.SheetSettings;
 import jxl.Workbook;
 import jxl.write.Alignment;
@@ -439,120 +429,134 @@ public class StudentInfoController {
 		}
 		return map;
 	}	
- //导出某天签到表exportScore
-	 @RequestMapping(value = "/exportSign.do")
-	    public void exportSign(HttpServletResponse response,int studentInfoDetailId) {
-	        System.out.println(studentInfoDetailId);
-		 StudentInfoDetail sd = studentInfoServiceImpl.selectStudentInfoDetailId(studentInfoDetailId);
-		 int courseId = sd.getCourseId();
-		 Course course = courseServiceImpl.selectCourseById(courseId);
-		 String currentTime = sd.getCurrentTime();
-	        // 文件名  
-	        String fileName = course.getCourseName() + "_" + currentTime + "签到表" + ".xls";
+    //导出某天签到表exportScore
+    @SuppressWarnings("deprecation")
+    @RequestMapping(value = "/exportSign.do")
+    public void exportSign(HttpServletResponse response,int studentInfoDetailId) {
+        System.out.println(studentInfoDetailId);
+        StudentInfoDetail sd = studentInfoServiceImpl.selectStudentInfoDetailId(studentInfoDetailId);
+        int courseId = sd.getCourseId();
+        Course course = courseServiceImpl.selectCourseById(courseId);
+        String currentTime = sd.getCurrentTime();
+        // 文件名  
+        String fileName = course.getCourseName() + "_" + currentTime + "签到表" + ".xls";
 
-	        response.setContentType("application/x-excel");
-	        response.setCharacterEncoding("UTF-8");
-	        response.addHeader("Content-Disposition", "attachment;filename="+ fileName);// excel文件名  
+        response.setContentType("application/x-excel");
+        response.setCharacterEncoding("UTF-8");
+        response.addHeader("Content-Disposition", "attachment;filename="+ fileName);// excel文件名  
 
-	        // 业务数据
-	        List<StudentInfoDetail> studentInfoDetails = studentInfoServiceImpl.selectEveryTimeSign(courseId, currentTime, sd.getCurrentCount()); 
-	        try {
-	            // 1.创建excel文件  
-	            WritableWorkbook book = Workbook.createWorkbook(response.getOutputStream());
-	            // 居中  
-	            WritableCellFormat wf = new WritableCellFormat();
-	            wf.setAlignment(Alignment.CENTRE);
+        // 业务数据
+        List<StudentInfoDetail> studentInfoDetails = studentInfoServiceImpl.selectEveryTimeSign(courseId, currentTime, sd.getCurrentCount()); 
+        try {
+            // 1.创建excel文件  
+            WritableWorkbook book = Workbook.createWorkbook(response.getOutputStream());
+            // 居中  
+            WritableCellFormat wf = new WritableCellFormat();
+            wf.setAlignment(Alignment.CENTRE);
 
-	            WritableSheet sheet = null;
-	            SheetSettings settings = null;
+            WritableSheet sheet = null;
+            SheetSettings settings = null;
 
-	            // 2.创建sheet并设置冻结前一行  
-	            sheet = book.createSheet("1", 0);
-	            settings = sheet.getSettings();
-	            settings.setVerticalFreeze(1);
+            // 2.创建sheet并设置冻结前一行  
+            sheet = book.createSheet("1", 0);
+            settings = sheet.getSettings();
+            settings.setVerticalFreeze(1);
 
-	            // 3.添加第一行及第二行标题数据  
-	            sheet.addCell(new Label(0, 0, "学号", wf));
-	            sheet.addCell(new Label(1, 0, "课程编码", wf));
-	            sheet.addCell(new Label(2, 0, "课程名称", wf));
-	            sheet.addCell(new Label(3, 0, "日期", wf));
-	            sheet.addCell(new Label(4, 0, "说明", wf));
-	            sheet.addCell(new Label(5, 0, "状态", wf));
-	            
-	            
+            // 3.添加第一行及第二行标题数据  
+            sheet.addCell(new Label(0, 0, "学号", wf));
+            sheet.addCell(new Label(1, 0, "课程编码", wf));
+            sheet.addCell(new Label(2, 0, "课程名称", wf));
+            sheet.addCell(new Label(3, 0, "日期", wf));
+            sheet.addCell(new Label(4, 0, "说明", wf));
+            sheet.addCell(new Label(5, 0, "状态", wf));
+                        
+            // 4.业务数据
+            for (int i = 0; i < studentInfoDetails.size(); i++) {
+                sheet.addCell(new Label(0, i + 1, studentInfoDetails.get(i).getStudentRoNo(), wf));
+                sheet.addCell(new Label(1, i + 1, courseId+"", wf));
+                sheet.addCell(new Label(2, i + 1, course.getCourseName(), wf));
+                sheet.addCell(new Label(3, i + 1, currentTime, wf));
+                sheet.addCell(new Label(4, i + 1, studentInfoDetails.get(i).getCurrentWeek(), wf));
+                sheet.addCell(new Label(5, i + 1, studentInfoDetails.get(i).getSignInStatus(), wf));
+            }
+            // 5.写入excel并关闭  
+            book.write();
+            book.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-	            // 4.业务数据
-	            for (int i = 0; i < studentInfoDetails.size(); i++) {
-	                sheet.addCell(new Label(0, i + 1, studentInfoDetails.get(i).getStudentRoNo(), wf));
-	                sheet.addCell(new Label(1, i + 1, courseId+"", wf));
-	                sheet.addCell(new Label(2, i + 1, course.getCourseName(), wf));
-	                sheet.addCell(new Label(3, i + 1, currentTime, wf));
-	                sheet.addCell(new Label(4, i + 1, studentInfoDetails.get(i).getCurrentWeek(), wf));
-	                sheet.addCell(new Label(5, i + 1, studentInfoDetails.get(i).getSignInStatus(), wf));
-	            }
+    }
+     //导出签到总纪录 exportTotalSign	 
+	 @SuppressWarnings("deprecation")
+	@RequestMapping(value = "/exportTotalSign.do")
+     public void exportTotalSign(HttpServletResponse response,int courseId) {
+        System.out.println(courseId);
+        Course course = courseServiceImpl.selectCourseById(courseId);
+        // 文件名  
+        String fileName = course.getCourseName() + "_" + "签到汇总表" + ".xls";
 
-	            // 5.写入excel并关闭  
-	            book.write();
-	            book.close();
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
+        response.setContentType("application/x-excel");
+        response.setCharacterEncoding("UTF-8");
+        response.addHeader("Content-Disposition", "attachment;filename="+ fileName);// excel文件名  
 
-	    }
- //导出签到总纪录 exportTotalSign	 
-	 @RequestMapping(value = "/exportTotalSign.do")
-	    public void exportTotalSign(HttpServletResponse response,int courseId) {
-	        System.out.println(courseId);
-		 Course course = courseServiceImpl.selectCourseById(courseId);
-	        // 文件名  
-	        String fileName = course.getCourseName() + "_" + "签到汇总表" + ".xls";
+        // 业务数据
+        List<ClazzStu> clazzStus = clazzStuServiceImpl.selectClazzStuListByCourse(courseId);
+        try {
+            // 1.创建excel文件  
+            WritableWorkbook book = Workbook.createWorkbook(response.getOutputStream());
+            // 居中  
+            WritableCellFormat wf = new WritableCellFormat();
+            wf.setAlignment(Alignment.CENTRE);
 
-	        response.setContentType("application/x-excel");
-	        response.setCharacterEncoding("UTF-8");
-	        response.addHeader("Content-Disposition", "attachment;filename="+ fileName);// excel文件名  
+            WritableSheet sheet = null;
+            SheetSettings settings = null;
+            
+            List<StudentInfoDetail> sid = studentInfoServiceImpl.selectTimeList(courseId);
 
-	        // 业务数据
-	        List<ClazzStu> clazzStus = clazzStuServiceImpl.selectClazzStuListByCourse(courseId);
-	        try {
-	            // 1.创建excel文件  
-	            WritableWorkbook book = Workbook.createWorkbook(response.getOutputStream());
-	            // 居中  
-	            WritableCellFormat wf = new WritableCellFormat();
-	            wf.setAlignment(Alignment.CENTRE);
+            // 2.创建sheet并设置冻结前一行  
+            sheet = book.createSheet("1", 0);
+            settings = sheet.getSettings();
+            settings.setVerticalFreeze(1);
 
-	            WritableSheet sheet = null;
-	            SheetSettings settings = null;
+            // 3.添加第一行及第二行标题数据  
+            sheet.addCell(new Label(0, 0, "学号", wf));
+            sheet.addCell(new Label(1, 0, "班级", wf));
+            sheet.addCell(new Label(2, 0, "姓名", wf));
+            sheet.addCell(new Label(3, 0, "签到", wf));
+            sheet.addCell(new Label(4, 0, "迟到", wf));
+            sheet.addCell(new Label(5, 0, "早退", wf));
+            sheet.addCell(new Label(6, 0, "请假", wf));
+            sheet.addCell(new Label(7, 0, "旷课", wf));
+            int tem1 = 0;
+            System.err.println(sid.size());
+            for(int i = 9; i < 9+sid.size(); i ++){
+            	System.out.println(sid.get(tem1).getCurrentTime());
+            	sheet.addCell(new Label(i, 0, sid.get(tem1).getCurrentTime(), wf));
+            	tem1++;
+            }
+            
+            // 4.业务数据
+            for (int i = 0; i < clazzStus.size(); i++) {
+                sheet.addCell(new Label(0, i + 1, clazzStus.get(i).getStudent().getStudentRoNo(), wf));
+                sheet.addCell(new Label(1, i + 1, clazzStus.get(i).getClazz().getClazzName(), wf));
+                sheet.addCell(new Label(2, i + 1, clazzStus.get(i).getStudent().getStudentName(), wf));
+                sheet.addCell(new Label(3, i + 1, clazzStus.get(i).getStudent().getStudentInfo().getSignIn()+"", wf));
+                sheet.addCell(new Label(4, i + 1, clazzStus.get(i).getStudent().getStudentInfo().getComeLate()+"", wf));
+                sheet.addCell(new Label(5, i + 1, clazzStus.get(i).getStudent().getStudentInfo().getLeaveEarlier()+"", wf));
+                sheet.addCell(new Label(6, i + 1, clazzStus.get(i).getStudent().getStudentInfo().getAskForLeave()+"", wf));
+                sheet.addCell(new Label(7, i + 1, clazzStus.get(i).getStudent().getStudentInfo().getAbsenteeism()+"", wf));
+                
+                int tem2 = 0;
+                for(int j = 9; j < 9+sid.size(); j ++){
+                	String currentTime = sid.get(tem2).getCurrentTime();
+                	StudentInfoDetail studentInfoDetail = studentInfoServiceImpl.stuInfoDetailByThree(clazzStus.get(i).getStudent().getStudentRoNo(), courseId, currentTime);
+                	sheet.addCell(new Label(j, i+1, studentInfoDetail.getSignInStatus(), wf));
+                	tem2++;
+                }
+            }
 
-	            // 2.创建sheet并设置冻结前一行  
-	            sheet = book.createSheet("1", 0);
-	            settings = sheet.getSettings();
-	            settings.setVerticalFreeze(1);
-
-	            // 3.添加第一行及第二行标题数据  
-	            sheet.addCell(new Label(0, 0, "学号", wf));
-	            sheet.addCell(new Label(1, 0, "班级", wf));
-	            sheet.addCell(new Label(2, 0, "姓名", wf));
-	            sheet.addCell(new Label(3, 0, "签到", wf));
-	            sheet.addCell(new Label(4, 0, "迟到", wf));
-	            sheet.addCell(new Label(5, 0, "早退", wf));
-	            sheet.addCell(new Label(6, 0, "请假", wf));
-	            sheet.addCell(new Label(7, 0, "旷课", wf));
-	            
-	            
-
-	            // 4.业务数据
-	            for (int i = 0; i < clazzStus.size(); i++) {
-	                sheet.addCell(new Label(0, i + 1, clazzStus.get(i).getStudent().getStudentRoNo(), wf));
-	                sheet.addCell(new Label(1, i + 1, clazzStus.get(i).getClazz().getClazzName(), wf));
-	                sheet.addCell(new Label(2, i + 1, clazzStus.get(i).getStudent().getStudentName(), wf));
-	                sheet.addCell(new Label(3, i + 1, clazzStus.get(i).getStudent().getStudentInfo().getSignIn()+"", wf));
-	                sheet.addCell(new Label(4, i + 1, clazzStus.get(i).getStudent().getStudentInfo().getComeLate()+"", wf));
-	                sheet.addCell(new Label(5, i + 1, clazzStus.get(i).getStudent().getStudentInfo().getLeaveEarlier()+"", wf));
-	                sheet.addCell(new Label(6, i + 1, clazzStus.get(i).getStudent().getStudentInfo().getAskForLeave()+"", wf));
-	                sheet.addCell(new Label(7, i + 1, clazzStus.get(i).getStudent().getStudentInfo().getAbsenteeism()+"", wf));
-	            }
-
-	            // 5.写入excel并关闭  
+            // 5.写入excel并关闭  
 	            book.write();
 	            book.close();
 	        } catch (Exception e) {

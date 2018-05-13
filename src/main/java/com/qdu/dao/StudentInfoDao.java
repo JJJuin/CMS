@@ -59,4 +59,8 @@ public interface StudentInfoDao {
     
     public int deleteStudentInfoDetail(String studentRoNo,int courseId);
     
+    public List<StudentInfoDetail> selectTimeList(int courseId);
+    
+    public StudentInfoDetail stuInfoDetailByThree(String studentRoNo,int courseId, String currentTime);
+    
 }
