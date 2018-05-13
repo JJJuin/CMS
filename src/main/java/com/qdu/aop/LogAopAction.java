@@ -119,9 +119,9 @@ public class LogAopAction {
 					log.setReponseTime((System.currentTimeMillis() - start) + "ms");
 					log.setCommite("执行失败: " + e);
 					log.setResult("failed");
-					if(!name.equals("")){
+					//if(name != null){
 						logEntityServiceImpl.saveLog(log);
-					}
+					//}
 				}
 			} else {// 没有包含注解
 				object = pjp.proceed();

@@ -32,6 +32,7 @@ import com.qdu.service.MyBlogService;
 import com.qdu.service.StudentService;
 import com.qdu.service.TeacherService;
 import com.qdu.util.Page;
+import com.qdu.websocket.WebSocketConnection;
 //超级管理员+相关操作
 @Controller
 @RequestMapping(value="/admin")
@@ -134,6 +135,8 @@ public class LogEntityController {
 		message.setMessageContent("<span style='color:#FF5722'>恭喜！</span><br/>博文标题为<<"+ myBlog.getBlogTitle() + ">>通过审核！");
 		message.setMessageType("admin");
 		messageServiceImpl.insertMessage(message);
+		int messageCount = messageServiceImpl.selectMessageCount(myBlog.getBlogAuthor());
+		 WebSocketConnection.sendMessageToUser(myBlog.getBlogAuthor(), messageCount+"");
 		if(tem > 0){
 			map.put("result", true);
 		}else {
@@ -164,6 +167,8 @@ public class LogEntityController {
 				message.setMessageContent("<span style='color:#FF5722'>恭喜！</span><br/>博文标题为<<"+ myBlog.getBlogTitle() + ">>通过审核！");
 				message.setMessageType("admin");
 				messageServiceImpl.insertMessage(message);
+				int messageCount = messageServiceImpl.selectMessageCount(myBlog.getBlogAuthor());
+				 WebSocketConnection.sendMessageToUser(myBlog.getBlogAuthor(), messageCount+"");
 				}
 			}
 			if(tem == divideBlogId.length){
@@ -194,7 +199,8 @@ public class LogEntityController {
 					+ "请自觉维护网络环境");
 			message.setMessageType("admin");
 			 messageServiceImpl.insertMessage(message);
-			
+			 int messageCount = messageServiceImpl.selectMessageCount(myBlog.getBlogAuthor());
+			 WebSocketConnection.sendMessageToUser(myBlog.getBlogAuthor(), messageCount+"");
 			if(tem > 0){
 				map.put("result", true);
 			}else {
@@ -227,6 +233,8 @@ public class LogEntityController {
 						+ "请自觉维护网络环境");
 				message.setMessageType("admin");
 				 messageServiceImpl.insertMessage(message);
+				 int messageCount = messageServiceImpl.selectMessageCount(myBlog.getBlogAuthor());
+				 WebSocketConnection.sendMessageToUser(myBlog.getBlogAuthor(), messageCount+"");
 			}
 		}
 		if(tem == divideBlogId.length){

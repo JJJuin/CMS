@@ -36,6 +36,7 @@ import com.qdu.service.StudentService;
 import com.qdu.service.TeacherService;
 import com.qdu.serviceimpl.ClazzServiceImpl;
 import com.qdu.util.MD5Util;
+import com.qdu.websocket.WebSocketConnection;
 
 import jxl.SheetSettings;
 import jxl.Workbook;
@@ -155,6 +156,8 @@ public class StudentInfoController {
 			 message.setMessageType("insertCourse");
 			 message.setMessageContent(courseId+"");
 			 messageServiceImpl.insertMessage(message);
+			 int messageCount = messageServiceImpl.selectMessageCount(studentRoNo);
+			 WebSocketConnection.sendMessageToUser(studentRoNo, messageCount+"");
 			map.put("result", true);
 		}else{
 			map.put("result", false);

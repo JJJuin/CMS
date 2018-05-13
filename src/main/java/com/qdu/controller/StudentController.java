@@ -11,8 +11,6 @@ import java.util.Map;
 import java.util.Random;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.catalina.mbeans.MBeanDumper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -22,12 +20,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.qdu.aop.SystemLog;
-import com.qdu.daoimpl.StudentInfoImpl;
 import com.qdu.pojo.Clazz;
 import com.qdu.pojo.ClazzStu;
 import com.qdu.pojo.Course;
@@ -52,13 +48,13 @@ import com.qdu.service.QrTemService;
 import com.qdu.service.StudentInfoService;
 import com.qdu.service.StudentService;
 import com.qdu.service.TeacherService;
-import com.qdu.serviceimpl.StudentServiceImpl;
 import com.qdu.util.GlobalVariable;
 import com.qdu.util.JavaEmailSender;
 import com.qdu.util.MD5Util;
 import com.qdu.util.Page;
 import com.qdu.util.ResponseUtil;
 import com.qdu.util.VertifyCodeUtil;
+import com.qdu.websocket.WebSocketConnection;
 
 @Controller
 @RequestMapping(value = "/student")
@@ -236,8 +232,7 @@ public class StudentController {
 		student.setStudentPassword(MD5Util.md5(password, "juin"));
 		student.setStudentPhoto(nameNow);
 		studentServiceImpl.insertStudentByNo(student);
-		System.out.println("学生注册成功");
-
+		System.out.println("学生注册成功");  
 		map.put("student", student);
 		System.out.println(student.getStudentGender());
 		request.getSession().setAttribute("UserId", null);
@@ -249,27 +244,32 @@ public class StudentController {
 	@SystemLog(module = "学生", methods = "日志管理-跳转到首页")
 	@RequestMapping(value = "/exchangeStudent.do")
 	public String exchangeStudent(String studentRoNo,String pageNow, ModelMap map, HttpServletRequest request) {
-		Student student = studentServiceImpl.selectStudentByNo(studentRoNo);
-		List<StudentInfo> studentInfos = studentInfoServiceImpl.selectCourseByStudentRono(studentRoNo);
-		if (pageNow == null) {
-			pageNow = 1 + "";
+		if(studentRoNo.equals(request.getSession().getAttribute("UserId"))){
+			Student student = studentServiceImpl.selectStudentByNo(studentRoNo);
+			List<StudentInfo> studentInfos = studentInfoServiceImpl.selectCourseByStudentRono(studentRoNo);
+			if (pageNow == null) {
+				pageNow = 1 + "";
+			}
+			Page page = null;
+			int totalCount = messageServiceImpl.selectMessageTotalCount(studentRoNo);
+			page = new Page(totalCount, Integer.parseInt(pageNow));
+			int messageCount = messageServiceImpl.selectMessageCount(studentRoNo);
+			map.put("messageCount", messageCount);
+			List<LogEntity> logEntities = logEntityServiceImpl.selectStudentLog(studentRoNo);
+			map.put("logEntity", logEntities);
+			List<StudentInfo> studentInfos2 = studentInfoServiceImpl.selectStudentInfoList(studentRoNo);
+			map.put("studentInfos2", studentInfos2);
+			map.put("page", page);
+			map.put("student", student);
+			map.addAttribute("studentInfos", studentInfos);
+			// session的id存一下
+			request.getSession().setAttribute("UserId", null);
+			request.getSession().setAttribute("UserId", studentRoNo);
+			return "studentPage";
+		}else {
+			return "failer";
 		}
-		Page page = null;
-		int totalCount = messageServiceImpl.selectMessageTotalCount(studentRoNo);
-		page = new Page(totalCount, Integer.parseInt(pageNow));
-		int messageCount = messageServiceImpl.selectMessageCount(studentRoNo);
-		map.put("messageCount", messageCount);
-		List<LogEntity> logEntities = logEntityServiceImpl.selectStudentLog(studentRoNo);
-		map.put("logEntity", logEntities);
-		List<StudentInfo> studentInfos2 = studentInfoServiceImpl.selectStudentInfoList(studentRoNo);
-		map.put("studentInfos2", studentInfos2);
-		map.put("page", page);
-		map.put("student", student);
-		map.addAttribute("studentInfos", studentInfos);
-		// session的id存一下
-		request.getSession().setAttribute("UserId", null);
-		request.getSession().setAttribute("UserId", studentRoNo);
-		return "studentPage";
+		
 	}
 
 	// 学生更改密码
@@ -582,6 +582,8 @@ public class StudentController {
 		message.setMessageType("insertCourse");
 		message.setMessageContent(courseId + "c" + clazz.getClazzId());
 		messageServiceImpl.insertMessage(message);
+		int messageCount = messageServiceImpl.selectMessageCount(teacher.getTeacherMobile());
+		 WebSocketConnection.sendMessageToUser(teacher.getTeacherMobile(), messageCount+"");
 		map.put("result", true);
 		}else {
 			map.put("result", false);

@@ -24,6 +24,47 @@ function   fresh(){
 	    location.href+="?reload=true";  
 	   }  
 	}
+	
+if('WebSocket' in window){
+    websocket = new WebSocket('ws://192.168.11.202:8080/ClassManageSys/websocket.do');
+    console.log("link success")
+  }else{
+    alert('当前浏览器不支持websocket，消息系统暂时无法使用..')
+  }
+
+	//连接发生错误的回调方法
+	websocket.onerror = function(){
+	   console.log("websocketError");
+	};
+	 
+	//连接成功建立的回调方法
+	websocket.onopen = function(event){
+	    send();
+	}
+	//接收到消息的回调方法
+	websocket.onmessage = function(event){
+	     $('#TmessageCount').html(event.data);
+	}
+	 
+	//连接关闭的回调方法
+	websocket.onclose = function(){
+		console.log("close");
+	}
+	
+	//发送消息
+	function send(){
+	    if(websocket != null){
+	    	websocket.send("${student.studentRoNo}");
+	    }else {
+	    	layui.use('layer', function() {
+				var $ = layui.jquery, layer = layui.layer;
+				layer.msg('websocket链接异常');
+			});
+		}
+	}
+	
+	
+	
 layui.use(['form'], function(){
 	var form = layui.form;
 	});

@@ -63,6 +63,7 @@ import com.qdu.util.JavaEmailSender;
 import com.qdu.util.MD5Util;
 import com.qdu.util.Page;
 import com.qdu.util.ResponseUtil;
+import com.qdu.websocket.WebSocketConnection;
 
 import jxl.SheetSettings;
 import jxl.Workbook;
@@ -477,6 +478,8 @@ public class TeacherController {
 			String status = "未通过";
 			int tem2 = leaveRecordServiceImpl.updateLeaveRecordByStudent(leaveRecordId,status);
 			if(tem > 0 && tem2 >0){
+				 int messageCount = messageServiceImpl.selectMessageCount(studentRoNo);
+				 WebSocketConnection.sendMessageToUser(studentRoNo, messageCount+"");
 				map.put("result", true);
 				System.out.println("true");
 			}
@@ -508,6 +511,8 @@ public class TeacherController {
 			message.setMessageType("leaveRecord");
 			int tem2 = messageServiceImpl.insertMessage(message);
 			if(tem > 0 && tem2 > 0){
+				 int messageCount = messageServiceImpl.selectMessageCount(studentRoNo);
+				 WebSocketConnection.sendMessageToUser(studentRoNo, messageCount+"");
 				map.put("result", true);
 			}
 		}
@@ -719,6 +724,8 @@ public class TeacherController {
 		for(StudentInfo studentInfo:studentInfos){
 			message.setMessageAccepter(studentInfo.getStudent().getStudentRoNo());
 			tem = messageServiceImpl.insertMessage(message);
+			 int messageCount = messageServiceImpl.selectMessageCount(studentInfo.getStudent().getStudentRoNo());
+			 WebSocketConnection.sendMessageToUser(studentInfo.getStudent().getStudentRoNo(), messageCount+"");
 		}
 		if(tem > 0){
 			map.put("result", true);
@@ -746,6 +753,8 @@ public class TeacherController {
 		
 		int tem = messageServiceImpl.insertMessage(message);
 		if(tem > 0){
+			int messageCount = messageServiceImpl.selectMessageCount(studentRoNo);
+			 WebSocketConnection.sendMessageToUser(studentRoNo, messageCount+"");
 			map.put("result", true);
 		}
 		else {
@@ -774,6 +783,8 @@ public class TeacherController {
 		
 		int tem = messageServiceImpl.insertMessage(message);
 		if(tem > 0){
+			int messageCount = messageServiceImpl.selectMessageCount(studentRoNo);
+			 WebSocketConnection.sendMessageToUser(studentRoNo, messageCount+"");
 			map.put("result", true);
 		}
 		else {

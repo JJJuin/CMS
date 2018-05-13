@@ -28,6 +28,7 @@ import com.qdu.service.ClazzService;
 import com.qdu.service.ClazzStuService;
 import com.qdu.service.CourseService;
 import com.qdu.service.LogEntityService;
+import com.qdu.service.MessageService;
 import com.qdu.service.QrTemService;
 import com.qdu.service.StudentInfoService;
 import com.qdu.service.TeacherService;
@@ -50,6 +51,7 @@ public class CourseController {
 	private QrTemService qrTemServiceImpl;
 	@Autowired 
 	LogEntityService logEntityServiceImpl;
+
 
 	// 教师添加课程
 	@SystemLog(module="教师",methods="日志管理-添加课程")
@@ -79,7 +81,7 @@ public class CourseController {
 		Course course2 = courseServiceImpl.selectIdFromCourse(courseName, teacherMobile);
 		int courseId = course2.getCourseId();
 		System.out.println("courseId: " + courseId);
-		String text = "http://101.200.61.255:8080/ClassManageSys/qr.jsp?teacherMobile=" + teacherMobile + "&courseId="
+		String text = "http://192.168.11.202:8080/ClassManageSys/qr.jsp?teacherMobile=" + teacherMobile + "&courseId="
 				+ courseId + "&courseName=" + courseName.replaceAll("\\+", "%2B") + "&teacherName=" + teacherName
 				+ "&currentTime=" + current + "&tem=" + tem;
 		testQR tQr = new testQR(text, courseName, teacherName);
@@ -142,7 +144,7 @@ public class CourseController {
 			Teacher teacher = teacherServiceImpl.selectTeacherByEmail(teacherMobile);
 			String teacherName = teacher.getTeacherName();
 			String current = currentYear +"";
-			String text = "http://101.200.61.255:8080/ClassManageSys/qr.jsp?teacherMobile=" + teacherMobile + "&courseId="
+			String text = "http://192.168.11.202:8080/ClassManageSys/qr.jsp?teacherMobile=" + teacherMobile + "&courseId="
 					+ courseId + "&courseName=" + courseName.replaceAll("\\+", "%2B") + "&teacherName=" + teacherName
 					+ "&currentTime=" + current + "&tem=" + schoolTem;
 			testQR tQr = new testQR(text, courseName, teacherName);
@@ -151,7 +153,7 @@ public class CourseController {
 			map.put("result", true);
 		}else {
 			map.put("result", false);
-		}
+		} 
 		return map;
 	}
     //删除课程信息通过id
@@ -181,7 +183,7 @@ public class CourseController {
 		Date date = new Date();
 		String currentTime = sdf.format(date);
 		System.out.println(currentTime);
-		String text = "http://101.200.61.255:8080/ClassManageSys/newSignIn.jsp?teacherName=" + teacherName + "&courseId="
+		String text = "http://192.168.11.202:8080/ClassManageSys/newSignIn.jsp?teacherName=" + teacherName + "&courseId="
 				+ courseId + "&courseName=" + course.getCourseName().replaceAll("\\+", "%2B") 
 				+ "&currentTime=" + currentTime;
 		 String time = new SimpleDateFormat("YYYY-MM-dd-HH-mm-ss").format(new Date());
@@ -202,7 +204,7 @@ public class CourseController {
 		if(course != null){
 			List<Clazz> clazzs = clazzServiceImpl.selectClazzNameByCourse(courseId);
 			if(clazzs.size() > 0){
-				map.put("clazzs", clazzs);
+				map.put("clazzs", clazzs); 
 				map.put("result", true);
 				System.out.println(clazzs.get(0).getClazzName());
 				
