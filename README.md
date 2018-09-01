@@ -50,11 +50,4 @@
 
 5.项目组成员及成员github地址，维护者的github地址 
 
-              姓名            学号       github       维护者
-               
-项目负责人：           侯亚军          201440703454          <https://github.com/JJJuin>           Yes
-
-组员：  刘子琪   201440703470    <https://github.com/liuziqi647>        No
-
-组员：  綦悦彤     201440703219    <https://github.com/暂无>     No
 
